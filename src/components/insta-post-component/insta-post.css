@@ -1,0 +1,38 @@
+.instapost {
+    background-color: white;
+    max-width: 500px;
+    border: 1px solid lightgray;
+    margin-bottom: 50px;
+}
+
+.instapost__image {
+    width: 100%;
+    object-fit: contain;
+    border-top: 1px solid lightgray;
+    border-bottom: 1px solid lightgray;
+}
+
+.instapost__username {
+    font-weight: 600;
+}
+
+.instapost__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px;
+}
+
+.instapost__header__left {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+}
+
+.instapost__avatar {
+    margin-right: 10px;
+}
+
+.instapost__footer {
+    margin: 10px;
+}

@@ -1,0 +1,81 @@
+.signin-page {
+    display: flex;
+    height: calc(100% - 56px);
+    justify-content: center;
+    align-items: center;
+    background-color: #fafafa;
+}
+
+.signin-container {
+    height: 510px;
+    width: 360px;
+}
+
+.signin-logo-form {
+    height: 415px;
+    border: 1px solid lightgray;
+    background-color: white;
+}
+
+.signin-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.signin-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 110px;
+    width: 100%;
+}
+
+.signin-dash {
+   width: 75%; 
+   text-align: center; 
+   border-bottom: 1px solid lightgray; 
+   line-height: 0.1em;
+   margin: 25px 0 20px; 
+}
+
+.signin-dash-text {
+    background:#fff;
+    font-weight: 600;
+    color: gray; 
+    font-size: 14px; 
+    padding:0 18px;
+}
+
+.signin-login-with-facebook {
+    cursor: pointer;
+    font-weight: 600;
+    color: #385185; 
+    font-size: 16px;
+    margin-bottom: 16px;
+}
+
+.forgot-password {
+    cursor: pointer; 
+    font-size: 14px;
+}
+
+.signin-signup {
+    height: 60px;
+    width: 360px;
+    margin-top: 30px;
+    font-size: 14px;
+    background-color: white;
+    border: 1px solid lightgray;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.signin-signup-link {
+    cursor: pointer;
+    font-weight: 600;
+    color: blue;
+}
