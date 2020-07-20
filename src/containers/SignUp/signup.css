@@ -1,4 +1,4 @@
-.signin-page {
+.signup-page {
     display: flex;
     min-height: calc(100% - 56px);
     justify-content: center;
@@ -6,20 +6,20 @@
     background-color: #fafafa;
 }
 
-.signin-container {
+.signup-container {
     margin-top: 80px;
     margin-bottom: 80px;
-    height: 510px;
+    height: 625px;
     width: 360px;
 }
 
-.signin-logo-form {
-    height: 415px;
+.signup-logo-form {
+    height: 530px;
     border: 1px solid lightgray;
     background-color: white;
 }
 
-.signin-form {
+.signup-form {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -27,7 +27,7 @@
     width: 100%;
 }
 
-.signin-logo {
+.signup-logo {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -35,36 +35,8 @@
     width: 100%;
 }
 
-.signin-dash {
-   width: 75%; 
-   text-align: center; 
-   border-bottom: 1px solid lightgray; 
-   line-height: 0.1em;
-   margin: 25px 0 20px; 
-}
 
-.signin-dash-text {
-    background:#fff;
-    font-weight: 600;
-    color: gray; 
-    font-size: 14px; 
-    padding:0 18px;
-}
-
-.signin-login-with-facebook {
-    cursor: pointer;
-    font-weight: 600;
-    color: #385185; 
-    font-size: 16px;
-    margin-bottom: 16px;
-}
-
-.forgot-password {
-    cursor: pointer; 
-    font-size: 14px;
-}
-
-.signin-signup {
+.signup-signin {
     height: 60px;
     width: 360px;
     margin-top: 30px;
@@ -76,7 +48,7 @@
     justify-content: center;
 }
 
-.signin-signup-link {
+.signup-signin-link {
     cursor: pointer;
     font-weight: 600;
     color: blue;

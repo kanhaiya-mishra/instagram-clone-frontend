@@ -6,5 +6,6 @@
 }
 
 .app__headerImg {
+  cursor: pointer;
   object-fit: contain;
 }

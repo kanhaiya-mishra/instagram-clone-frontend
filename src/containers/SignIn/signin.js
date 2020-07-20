@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import './signin.css';
 import { makeStyles } from '@material-ui/core/styles';
 import { TextField, Button } from '@material-ui/core';
-import { Link } from 'react-router-dom';
+import Toastr from '../../components/snackbar-component/snackbar';
+import { Link, useHistory } from 'react-router-dom';
+import DBLayer from '../../dblayer';
 
-const useStylesReddit = makeStyles((theme) => ({
+const useStylesInstagram = makeStyles((theme) => ({
     root: {
         border: '1px solid lightgray',
         overflow: 'hidden',
@@ -21,8 +23,8 @@ const useStylesReddit = makeStyles((theme) => ({
     focused: {}
 }));
 
-function RedditTextField(props) {
-    const classes = useStylesReddit();
+function InstagramTextField(props) {
+    const classes = useStylesInstagram();
 
     return <TextField InputProps={{ classes, disableUnderline: true }} {...props} />;
 }
@@ -49,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
         color: 'white',
         fontWeight: 600,
         width: '275px',
-        marginTop: '10px',
+        marginTop: '20px',
         textTransform: 'none',
         backgroundColor: '#0095f6',
         '&:hover': {
@@ -59,10 +61,62 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const SignIn = () => {
+
     const classes = useStyles();
+    const [usernameOrEmail, setUsernameOrEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
+    const toastrRef = useRef();
+    const history = useHistory();
+
+    useEffect(() => {
+        // If user is signed in already, show home page
+        if (false) history.push("/");
+    }, [])
+
+    const changeUsernameorEmail = (event) => {
+        setUsernameOrEmail(event.target.value);
+    }
+
+    const changePassword = (event) => {
+        setPassword(event.target.value);
+    }
+
+    const changeShowPassword = (event) => {
+        setShowPassword(event.target.value);
+    }
+
+    const validateInputData = () => {
+        const toastrRefCurrent = toastrRef && toastrRef.current ? toastrRef.current : undefined;
+        if (usernameOrEmail.length < 1) {
+            toastrRefCurrent.handleClick('Please enter a valid email or username!', 'error');
+            return false;
+        }
+        if (password.length < 8) {
+            toastrRefCurrent.handleClick('Password length should be atleast 8 characters', 'info');
+            return false;
+        }
+        return true;
+    }
+
+    const onSignIn = () => {
+        if (validateInputData()) {
+            DBLayer.signIn({ usernameOrEmail, password })
+                .then(() => {
+                    history.push("/");
+                })
+        }
+    }
+
+    const comingSoon = () => {
+        const toastrRefCurrent = toastrRef && toastrRef.current ? toastrRef.current : undefined;
+        toastrRefCurrent.handleClick('Coming Soon :)', 'info');
+    }
+
     return (
         <div className="signin-page">
             <div className="signin-container">
+                <Toastr ref={toastrRef} />
                 <div className="signin-logo-form">
                     <div className="signin-logo">
                         <img src="/logo/app-logo.png"
@@ -70,7 +124,7 @@ const SignIn = () => {
                         />
                     </div>
                     <div className="signin-form">
-                        <RedditTextField
+                        <InstagramTextField
                             label="Username or email"
                             className={classes.margin}
                             InputLabelProps={{
@@ -79,11 +133,12 @@ const SignIn = () => {
                                     focused: classes.labelFocused
                                 }
                             }}
-                            value=""
+                            value={usernameOrEmail}
+                            onChange={changeUsernameorEmail}
                             variant="filled"
                             id="signin-username-email"
                         />
-                        <RedditTextField
+                        <InstagramTextField
                             label="Password"
                             className={classes.margin}
                             InputLabelProps={{
@@ -92,23 +147,25 @@ const SignIn = () => {
                                     focused: classes.labelFocused
                                 }
                             }}
-                            value=""
+                            value={password}
+                            onChange={changePassword}
                             variant="filled"
                             id="signin-password"
                         />
                         <Button variant="contained"
                             type="submit"
                             className={classes.button}
+                            onClick={onSignIn}
                             disableElevation>
                             Sign in
                         </Button>
                         <div className="signin-dash"><span className="signin-dash-text"> OR </span></div>
-                        <div className="signin-login-with-facebook">Login with Facebook</div>
-                        <div className="forgot-password">Forgot Password?</div>
+                        <div className="signin-login-with-facebook" onClick={comingSoon}>Login with Facebook</div>
+                        <div className="forgot-password" onClick={comingSoon}>Forgot Password?</div>
                     </div>
                 </div>
                 <div className="signin-signup">
-                    Don't have an account?&nbsp;<span className="signin-signup-link">Sign up</span>
+                    Don't have an account?&nbsp;<Link to="/signup" className="signin-signup-link">Sign up</Link>
                 </div>
             </div>
         </div>
