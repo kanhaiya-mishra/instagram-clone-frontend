@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './signup.css';
 import { makeStyles } from '@material-ui/core/styles';
-import { TextField, Button } from '@material-ui/core';
+import { TextField, Button, CircularProgress, InputAdornment } from '@material-ui/core';
 import Toastr from '../../components/snackbar-component/snackbar';
 import { Link, useHistory } from 'react-router-dom';
 import DBLayer from '../../dblayer';
@@ -52,9 +52,8 @@ const useStyles = makeStyles((theme) => ({
         width: '275px',
         marginTop: '20px',
         textTransform: 'none',
-        backgroundColor: '#0095f6',
         '&:hover': {
-            backgroundColor: '#0095f6'
+            backgroundColor: theme.palette.primary.main
         }
     }
 }));
@@ -64,9 +63,10 @@ const SignUp = () => {
     const history = useHistory();
     const [name, setName] = useState("");
     const [username, setUsername] = useState("");
-    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [usernameIsValid, setUsernameIsValid] = useState(true);
     const toastrRef = useRef();
 
     useEffect(() => {
@@ -82,10 +82,6 @@ const SignUp = () => {
         setUsername(event.target.value);
     }
 
-    const changeEmail = (event) => {
-        setEmail(event.target.value);
-    }
-
     const changePassword = (event) => {
         setPassword(event.target.value);
     }
@@ -96,7 +92,7 @@ const SignUp = () => {
 
     const validateInputData = () => {
         const toastrRefCurrent = toastrRef && toastrRef.current ? toastrRef.current : undefined;
-        if (name.length < 1 || email.length < 1 || username.length < 1 || password.length < 1 || confirmPassword.length < 1) {
+        if (name.length < 1 || username.length < 1 || password.length < 1 || confirmPassword.length < 1) {
             toastrRefCurrent.handleClick('Please enter all fields!', 'error');
             return false;
         }
@@ -108,16 +104,12 @@ const SignUp = () => {
             toastrRefCurrent.handleClick('Password and Confirm password do not match!', 'info');
             return false;
         }
-        if (!(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,5})+$/.test(email))) {
-            toastrRefCurrent.handleClick('Please enter a valid email!', 'error');
-            return false;
-        }
         return true;
     }
 
     const onSignUp = () => {
         if (validateInputData()) {
-            DBLayer.signIn({ name, email, username, password })
+            DBLayer.signIn({ name, username, password })
                 .then(() => {
                     const toastrRefCurrent = toastrRef && toastrRef.current ? toastrRef.current : undefined;
                     toastrRefCurrent.handleClick('You have been successfully Signed Up!', 'success');
@@ -151,20 +143,6 @@ const SignUp = () => {
                             id="signup-name"
                         />
                         <InstagramTextField
-                            label="Email"
-                            className={classes.margin}
-                            InputLabelProps={{
-                                classes: {
-                                    root: classes.labelRoot,
-                                    focused: classes.labelFocused
-                                }
-                            }}
-                            value={email}
-                            onChange={changeEmail}
-                            variant="filled"
-                            id="signup-email"
-                        />
-                        <InstagramTextField
                             label="Username"
                             className={classes.margin}
                             InputLabelProps={{
@@ -187,6 +165,7 @@ const SignUp = () => {
                                     focused: classes.labelFocused
                                 }
                             }}
+                            type="password"
                             value={password}
                             onChange={changePassword}
                             variant="filled"
@@ -201,6 +180,7 @@ const SignUp = () => {
                                     focused: classes.labelFocused
                                 }
                             }}
+                            type="password"
                             value={confirmPassword}
                             onChange={changeConfirmPassword}
                             variant="filled"
@@ -208,6 +188,7 @@ const SignUp = () => {
                         />
                         <Button variant="contained"
                             type="submit"
+                            color="primary"
                             className={classes.button}
                             onClick={onSignUp}
                             disableElevation>

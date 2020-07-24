@@ -2,7 +2,7 @@ import Cookies from 'js-cookie';
 
 export default class UserService {
 
-    static setUser(userDetails, rememberMe) {
+    static setUser(userDetails) {
         try {
             Cookies.set('userDetails', userDetails);
         } catch (err) {
@@ -18,13 +18,5 @@ export default class UserService {
 
     static removeUser() {
         Cookies.remove('userDetails');
-    }
-
-    static updateUser(userDetails, expires) {
-        try {
-            Cookies.set('userDetails', userDetails);
-        } catch (err) {
-            console.log(err);
-        }
     }
 }

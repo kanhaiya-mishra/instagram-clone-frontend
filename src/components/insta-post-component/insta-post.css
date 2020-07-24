@@ -2,7 +2,8 @@
     background-color: white;
     max-width: 500px;
     border: 1px solid lightgray;
-    margin-bottom: 50px;
+    margin-top: 25px;
+    margin-bottom: 25px;
 }
 
 .instapost__image {

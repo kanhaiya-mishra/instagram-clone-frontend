@@ -5,6 +5,8 @@ import { TextField, Button } from '@material-ui/core';
 import Toastr from '../../components/snackbar-component/snackbar';
 import { Link, useHistory } from 'react-router-dom';
 import DBLayer from '../../dblayer';
+import UserService from '../../services/user-service';
+import AppLoader from '../../components/app-loader-component/app-loader';
 
 const useStylesInstagram = makeStyles((theme) => ({
     root: {
@@ -53,9 +55,8 @@ const useStyles = makeStyles((theme) => ({
         width: '275px',
         marginTop: '20px',
         textTransform: 'none',
-        backgroundColor: '#0095f6',
         '&:hover': {
-            backgroundColor: '#0095f6'
+            backgroundColor: theme.palette.primary.main
         }
     }
 }));
@@ -63,19 +64,22 @@ const useStyles = makeStyles((theme) => ({
 const SignIn = () => {
 
     const classes = useStyles();
-    const [usernameOrEmail, setUsernameOrEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const [username, setUsername] = useState("kanhaiya");
+    const [password, setPassword] = useState("insta-clone");
+    const [showLoader, setShowLoader] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const toastrRef = useRef();
     const history = useHistory();
 
     useEffect(() => {
         // If user is signed in already, show home page
-        if (false) history.push("/");
+        if (UserService.getUser()) {
+            history.push("/");
+        }
     }, [])
 
-    const changeUsernameorEmail = (event) => {
-        setUsernameOrEmail(event.target.value);
+    const changeUsername = (event) => {
+        setUsername(event.target.value);
     }
 
     const changePassword = (event) => {
@@ -88,7 +92,7 @@ const SignIn = () => {
 
     const validateInputData = () => {
         const toastrRefCurrent = toastrRef && toastrRef.current ? toastrRef.current : undefined;
-        if (usernameOrEmail.length < 1) {
+        if (username.length < 1) {
             toastrRefCurrent.handleClick('Please enter a valid email or username!', 'error');
             return false;
         }
@@ -100,22 +104,35 @@ const SignIn = () => {
     }
 
     const onSignIn = () => {
+        if (UserService.getUser()) {
+            window.location.reoload();
+            return;
+        }
         if (validateInputData()) {
-            DBLayer.signIn({ usernameOrEmail, password })
-                .then(() => {
+            setShowLoader(true);
+            DBLayer.signIn({ username, password })
+                .then((response) => {
+                    UserService.setUser(response.data);
+                    setShowLoader(false);
                     history.push("/");
+                })
+                .catch((err) => {
+                    const toastrRefCurrent = toastrRef && toastrRef.current ? toastrRef.current : undefined;
+                    toastrRefCurrent.handleClick('Username/Password incorrect!', 'error');
+                    setShowLoader(false);
                 })
         }
     }
 
     const comingSoon = () => {
         const toastrRefCurrent = toastrRef && toastrRef.current ? toastrRef.current : undefined;
-        toastrRefCurrent.handleClick('Coming Soon :)', 'info');
+        toastrRefCurrent.handleClick('Feature Coming Soon!', 'info');
     }
 
     return (
         <div className="signin-page">
             <div className="signin-container">
+                <AppLoader showLoader={showLoader} />
                 <Toastr ref={toastrRef} />
                 <div className="signin-logo-form">
                     <div className="signin-logo">
@@ -133,8 +150,8 @@ const SignIn = () => {
                                     focused: classes.labelFocused
                                 }
                             }}
-                            value={usernameOrEmail}
-                            onChange={changeUsernameorEmail}
+                            value={username}
+                            onChange={changeUsername}
                             variant="filled"
                             id="signin-username-email"
                         />
@@ -147,6 +164,7 @@ const SignIn = () => {
                                     focused: classes.labelFocused
                                 }
                             }}
+                            type="password"
                             value={password}
                             onChange={changePassword}
                             variant="filled"
@@ -154,6 +172,7 @@ const SignIn = () => {
                         />
                         <Button variant="contained"
                             type="submit"
+                            color="primary"
                             className={classes.button}
                             onClick={onSignIn}
                             disableElevation>

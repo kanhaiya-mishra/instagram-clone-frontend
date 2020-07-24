@@ -3,6 +3,9 @@
   padding: 10px;
   height: 35px;
   border-bottom: 1px solid lightgray;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .app__headerImg {
