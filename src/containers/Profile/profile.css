@@ -1,0 +1,27 @@
+.app__profile {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    align-items: center;
+    background-color: #fafafa;
+}
+
+.profile__head {
+    display: flex;
+    margin-top: 24px;
+    align-items: center;
+    width: 50%;
+}
+
+.avatar__profilepic {
+    height: 120px !important;
+    width: 120px !important;
+    margin-right:  30px;
+}
+
+.profile__divider {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    width: 50%;
+    border-top: 1px solid lightgray;
+}

@@ -1,10 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './signup.css';
 import { makeStyles } from '@material-ui/core/styles';
-import { TextField, Button, CircularProgress, InputAdornment } from '@material-ui/core';
+import { TextField, Button } from '@material-ui/core';
 import Toastr from '../../components/snackbar-component/snackbar';
 import { Link, useHistory } from 'react-router-dom';
 import DBLayer from '../../dblayer';
+import AppLoader from '../../components/app-loader-component/app-loader';
 
 const useStylesInstagram = makeStyles((theme) => ({
     root: {
@@ -65,13 +66,11 @@ const SignUp = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [usernameIsValid, setUsernameIsValid] = useState(true);
+    const [showLoader, setShowLoader] = useState(false);
     const toastrRef = useRef();
 
     useEffect(() => {
-        // If user is signed in already, show home page
-        if (false) history.push("/");
+        history.push("/");
     }, [])
 
     const changeName = (event) => {
@@ -109,11 +108,18 @@ const SignUp = () => {
 
     const onSignUp = () => {
         if (validateInputData()) {
+            setShowLoader(true);
             DBLayer.signIn({ name, username, password })
                 .then(() => {
+                    setShowLoader(false);
                     const toastrRefCurrent = toastrRef && toastrRef.current ? toastrRef.current : undefined;
                     toastrRefCurrent.handleClick('You have been successfully Signed Up!', 'success');
                     history.push("/signin");
+                })
+                .catch((err) => {
+                    setShowLoader(false);
+                    const toastrRefCurrent = toastrRef && toastrRef.current ? toastrRef.current : undefined;
+                    toastrRefCurrent.handleClick('An error occured, try again!', 'error');
                 })
         }
     }

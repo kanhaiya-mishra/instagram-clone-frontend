@@ -62,21 +62,31 @@ function AppHeader() {
         })
     };
 
+    const redirect = (arg) => {
+        if (arg == 'HOME') {
+            history.push('/')
+        } else if (arg === 'PROFILE') {
+            const username = user.username;
+            history.push(`/profile/${username}`);
+        }
+    }
+
     return (
         <div className="app__header">
             <img className="app__headerImg"
                 src="https://www.instagram.com/static/images/branding/logoWhiteoutLockup.png/3a62b1a95da3.png"
-                onClick={history.push("/")}
+                onClick={() => redirect('HOME')}
                 alt="logo" />
             {/* <Idhar Search Dalna Hai> */}
             <div>
                 {Object.keys(user).length !== 0 &&
                     <span className={classes.rightColumn}>
-                        <HomeIcon onClick={history.push('/')}
+                        <HomeIcon onClick={() => redirect('HOME')}
                             style={{ marginRight: "8px" }}
                             className={classes.iconButtons} />
                         <Avatar
                             title="My Profile"
+                            onClick={() => redirect('PROFILE')}
                             className={classes.profileAvatar}
                             alt={user.username}
                             src={user.profileURL}

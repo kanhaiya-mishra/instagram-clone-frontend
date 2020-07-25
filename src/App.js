@@ -6,6 +6,7 @@ import AppHeader from './components/app-header-component/app-header';
 import Home from './containers/HomePage/home';
 import SignIn from './containers/SignIn/signin';
 import SignUp from './containers/SignUp/signup';
+import Profile from './containers/Profile/profile';
 import PrivateRoute from './components/private-route-component/private-route';
 import { overrideTheme } from './override-theme';
 
@@ -15,9 +16,10 @@ function App() {
       <BrowserRouter>
         <AppHeader />
         <Switch>
-          <PrivateRoute exact path="/" component={overrideTheme(Home)} />
           <Route path="/signin" component={overrideTheme(SignIn)} />
           <Route path="/signup" component={overrideTheme(SignUp)} />
+          <PrivateRoute path="/profile/:id" component={overrideTheme(Profile)} />
+          <PrivateRoute exact path="/" component={overrideTheme(Home)} />
         </Switch>
       </BrowserRouter>
     </div>
