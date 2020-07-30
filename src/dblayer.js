@@ -19,8 +19,8 @@ class DBLayer {
         return axios.post(apiURL);
     }
 
-    static getProfile(username) {
-        const apiURL = `${environment.API_URL}/user-profile/${username}`;
+    static allUserPosts(username) {
+        const apiURL = `${environment.API_URL}/insta-post/user/${username}`;
         return axios.get(apiURL, globalOptions);
     }
 
@@ -32,6 +32,16 @@ class DBLayer {
     static postInstaPost(data) {
         const apiURL = `${environment.API_URL}/insta-post`;
         return axios.post(apiURL, data, globalOptions);
+    }
+
+    static getParticularPost(id) {
+        const apiURL = `${environment.API_URL}/insta-post/${id}`;
+        return axios.get(apiURL, globalOptions);
+    }
+
+    static getComment(id) {
+        const apiURL = `${environment.API_URL}/comment/${id}`;
+        return axios.get(apiURL, globalOptions);
     }
 }
 

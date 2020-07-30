@@ -4,7 +4,6 @@ import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme } from '@material-ui/core/styles';
@@ -36,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
     },
     preview: {
         height: '400px',
-        weight: '400px',
+        width: '400px',
         objectFit: 'contain'
     }
 }));
@@ -60,7 +59,10 @@ const CreatePostModal = React.forwardRef((props, ref) => {
         setOpen(true);
     };
 
-    const handleClose = () => {
+    const handleClose = (success) => {
+        if (success.post && Object.keys(success.post).length > 0) {
+            props.postCreated(success.post);
+        }
         resetStates();
         setOpen(false);
     };
@@ -120,8 +122,8 @@ const CreatePostModal = React.forwardRef((props, ref) => {
                     user: userDetails
                 });
             })
-            .then(() => {
-                handleClose();
+            .then((result) => {
+                handleClose(result.data);
             })
             .catch((err) => {
                 setShowLoader(false);
@@ -140,39 +142,37 @@ const CreatePostModal = React.forwardRef((props, ref) => {
                 <DialogTitle id="responsive-dialog-title">{"Create Post"}</DialogTitle>
                 <AppLoader showLoader={showLoader} />
                 <DialogContent>
-                    <DialogContentText>
-                        {!localImageURL ?
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                component="label"
-                                className={classes.button}
-                                disableElevation>
-                                Choose Image
+                    {!localImageURL ?
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            component="label"
+                            className={classes.button}
+                            disableElevation>
+                            Choose Image
                                     <input
-                                    type="file"
-                                    accept="image/*" multiple="false"
-                                    onChange={onUploadImage}
-                                    style={{ display: "none" }}
-                                />
-                            </Button>
-                            :
-                            <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                <TextField
-                                    label="Caption"
-                                    value={caption}
-                                    onChange={changeCaption}
-                                    multiline
-                                    rows={2}
-                                    style={{ marginBottom: '8px' }}
-                                    variant="outlined"
-                                />
-                                <img
-                                    src={localImageURL}
-                                    className={classes.preview} />
-                            </div>
-                        }
-                    </DialogContentText>
+                                type="file"
+                                accept="image/*" multiple="false"
+                                onChange={onUploadImage}
+                                style={{ display: "none" }}
+                            />
+                        </Button>
+                        :
+                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                            <TextField
+                                label="Caption"
+                                value={caption}
+                                onChange={changeCaption}
+                                multiline
+                                rows={2}
+                                style={{ marginBottom: '8px' }}
+                                variant="outlined"
+                            />
+                            <img
+                                src={localImageURL}
+                                className={classes.preview} />
+                        </div>
+                    }
                 </DialogContent>
                 <DialogActions>
                     <Button

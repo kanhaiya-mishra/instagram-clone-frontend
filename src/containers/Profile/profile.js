@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import './profile.css';
 import { makeStyles } from '@material-ui/core/styles';
 import { Button } from '@material-ui/core';
-import InstaPost from '../../components/insta-post-component/insta-post';
+import Grid from '@material-ui/core/Grid';
 import AppLoader from '../../components/app-loader-component/app-loader';
 import DBLayer from '../../dblayer';
 import { Avatar } from '@material-ui/core';
 import CreatePostModal from '../../components/upload-post-component/upload-image-modal';
+import InstPostModal from '../../components/insta-post-modal-container/insta-post-modal';
+import FavoriteIcon from '@material-ui/icons/Favorite';
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -28,9 +30,10 @@ const Profile = (props) => {
     const [userPosts, setUserPosts] = useState([]);
     const [showLoader, setShowLoader] = useState(true);
     const createPostRef = React.useRef();
+    const instaPostRef = React.useRef();
 
     useEffect(() => {
-        DBLayer.getProfile(username)
+        DBLayer.allUserPosts(username)
             .then(res => {
                 setUserDetails(res.data.userProfile);
                 setUserPosts(res.data.instaPosts);
@@ -50,11 +53,26 @@ const Profile = (props) => {
         createPostRefCurrent.open();
     }
 
+    const postCreated = (post) => {
+        const allUserPosts = JSON.parse(JSON.stringify(userPosts));
+        allUserPosts.unshift(post);
+        setUserPosts(allUserPosts);
+    }
+
+    const openInstaPostModal = (post) => {
+        const instaPostRefCurrent = instaPostRef && instaPostRef.current ? instaPostRef.current : undefined;
+        instaPostRefCurrent.open(post);
+    }
+
     return (
         <div className="app__profile">
             <AppLoader showLoader={showLoader} />
             <CreatePostModal
                 ref={createPostRef}
+                postCreated={postCreated}
+            />
+            <InstPostModal
+                ref={instaPostRef}
             />
             {!showLoader &&
                 <>
@@ -89,7 +107,7 @@ const Profile = (props) => {
                     </Button>
                     <hr className="profile__divider" />
                     <div className="profile__container">
-                        {userPosts.length > 0 ? <PaintUserProfile userPosts={userPosts} /> : <div>Click Create Post to create a new Post!</div>}
+                        {userPosts.length > 0 ? <PaintUserProfile openInstaPostModal={openInstaPostModal} userPosts={userPosts} /> : <div>Click Create Post to create a new Post!</div>}
                     </div>
                 </>
             }
@@ -99,9 +117,38 @@ const Profile = (props) => {
 
 const PaintUserProfile = (props) => {
     return (
-        props.userPosts.map((post) => {
-            return <InstaPost imageURL={post.imageURL} caption={post.caption} username={post.postOwner.username} />
-        })
+        <>
+            <Grid container spacing={3}>
+                {props.userPosts.map((post) => {
+                    return (
+                        <Grid item xs={6} sm={3}>
+                            <ThumbnailPainter imageURL={post.imageURL} likeCount={post.likeCount} openInstaPostModal={() => props.openInstaPostModal(post)} />
+                        </Grid>
+                    )
+                })}
+            </Grid>
+        </>
+    )
+}
+
+const ThumbnailPainter = (props) => {
+    const [showThumbnail, setShowThumbnail] = React.useState(false);
+    const showLikes = (show) => {
+        setShowThumbnail(show);
+    }
+    return (
+        <div className="thumbnail__container"
+            onMouseEnter={(e) => showLikes(true)}
+            onMouseLeave={(e) => showLikes(false)}
+            onClick={props.openInstaPostModal}
+        >
+            <img className="thumbnail__image"
+                src={props.imageURL}
+                alt="post-thumbnail" />
+            <div className={showThumbnail ? "thumbnail__hovershow" : "thumbnail__hoverhide"}></div>
+            <div className={showThumbnail ? "thumbnail__like" : "thumbnail__hoverhide"}>
+                <FavoriteIcon />{props.likeCount}</div>
+        </div>
     )
 }
 
