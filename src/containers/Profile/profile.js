@@ -9,6 +9,7 @@ import { Avatar } from '@material-ui/core';
 import CreatePostModal from '../../components/upload-post-component/upload-image-modal';
 import InstPostModal from '../../components/insta-post-modal-container/insta-post-modal';
 import FavoriteIcon from '@material-ui/icons/Favorite';
+import ChatBubbleIcon from '@material-ui/icons/ChatBubble';
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -64,6 +65,18 @@ const Profile = (props) => {
         instaPostRefCurrent.open(post);
     }
 
+    const updateCommentLikeCount = (data) => {
+        const localUserPosts = JSON.parse(JSON.stringify(userPosts));
+        localUserPosts.forEach((post, index) => {
+            if(post._id === data.postId) {
+                post.likeCount = data.likeCommentCount.likeCount;
+                post.commentCount = data.likeCommentCount.commentCount;
+                return;
+            }
+        })
+        setUserPosts(localUserPosts);
+    }
+
     return (
         <div className="app__profile">
             <AppLoader showLoader={showLoader} />
@@ -73,8 +86,9 @@ const Profile = (props) => {
             />
             <InstPostModal
                 ref={instaPostRef}
+                updateCommentLikeCount={updateCommentLikeCount}
             />
-            {!showLoader &&
+            {!showLoader && Object.keys(userDetails).length > 0 &&
                 <>
                     <div className="profile__head">
                         <Avatar
@@ -111,6 +125,9 @@ const Profile = (props) => {
                     </div>
                 </>
             }
+            {!showLoader && Object.keys(userDetails).length === 0 &&
+                <div>Oops! Something went wrong!</div>
+            }
         </div>
     )
 }
@@ -121,8 +138,11 @@ const PaintUserProfile = (props) => {
             <Grid container spacing={3}>
                 {props.userPosts.map((post) => {
                     return (
-                        <Grid item xs={6} sm={3}>
-                            <ThumbnailPainter imageURL={post.imageURL} likeCount={post.likeCount} openInstaPostModal={() => props.openInstaPostModal(post)} />
+                        <Grid item key={post._id} xs={6} sm={3}>
+                            <ThumbnailPainter imageURL={post.imageURL}
+                                likeCount={post.likeCount}
+                                commentCount={post.commentCount}
+                                openInstaPostModal={() => props.openInstaPostModal(post)} />
                         </Grid>
                     )
                 })}
@@ -147,7 +167,7 @@ const ThumbnailPainter = (props) => {
                 alt="post-thumbnail" />
             <div className={showThumbnail ? "thumbnail__hovershow" : "thumbnail__hoverhide"}></div>
             <div className={showThumbnail ? "thumbnail__like" : "thumbnail__hoverhide"}>
-                <FavoriteIcon />{props.likeCount}</div>
+                <FavoriteIcon style={{ fontSize: 24 }} />{props.likeCount} &nbsp; <ChatBubbleIcon style={{ fontSize: 24 }} />{props.commentCount || 0}</div>
         </div>
     )
 }

@@ -86,6 +86,14 @@ const SignIn = () => {
         setPassword(event.target.value);
     }
 
+    const ifEnter = (e) => {
+        if (e.which === 13) {
+            e.stopPropagation();
+            e.preventDefault();
+            onSignIn();
+        }
+    }
+
     const changeShowPassword = (event) => {
         setShowPassword(event.target.value);
     }
@@ -152,6 +160,7 @@ const SignIn = () => {
                             }}
                             value={username}
                             onChange={changeUsername}
+                            onKeyPress={ifEnter}
                             variant="filled"
                             id="signin-username-email"
                         />
@@ -167,6 +176,7 @@ const SignIn = () => {
                             type="password"
                             value={password}
                             onChange={changePassword}
+                            onKeyPress={ifEnter}
                             variant="filled"
                             id="signin-password"
                         />
