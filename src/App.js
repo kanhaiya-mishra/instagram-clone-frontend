@@ -16,10 +16,10 @@ function App() {
       <BrowserRouter>
         <AppHeader />
         <Switch>
+          <PrivateRoute path="/" exact component={overrideTheme(Home)} />
           <Route path="/signin" component={overrideTheme(SignIn)} />
           <Route path="/signup" component={overrideTheme(SignUp)} />
           <PrivateRoute path="/profile/:id" component={overrideTheme(Profile)} />
-          <PrivateRoute exact path="/" component={overrideTheme(Home)} />
         </Switch>
       </BrowserRouter>
     </div>

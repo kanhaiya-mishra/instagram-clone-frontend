@@ -4,7 +4,6 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme } from '@material-ui/core/styles';
-import DBLayer from '../../dblayer';
 import UserService from '../../services/user-service';
 import AppLoader from '../../components/app-loader-component/app-loader';
 import CloseIcon from '@material-ui/icons/Close';

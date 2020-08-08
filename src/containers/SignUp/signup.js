@@ -6,6 +6,7 @@ import Toastr from '../../components/snackbar-component/snackbar';
 import { Link, useHistory } from 'react-router-dom';
 import DBLayer from '../../dblayer';
 import AppLoader from '../../components/app-loader-component/app-loader';
+import UserService from '../../services/user-service';
 
 const useStylesInstagram = makeStyles((theme) => ({
     root: {
@@ -70,7 +71,10 @@ const SignUp = () => {
     const toastrRef = useRef();
 
     useEffect(() => {
-        history.push("/");
+        // If user is signed in already, show home page
+        if (UserService.getUser()) {
+            history.push("/");
+        }
     }, [])
 
     const changeName = (event) => {
@@ -109,7 +113,7 @@ const SignUp = () => {
     const onSignUp = () => {
         if (validateInputData()) {
             setShowLoader(true);
-            DBLayer.signIn({ name, username, password })
+            DBLayer.signUp({ name, username, password })
                 .then(() => {
                     setShowLoader(false);
                     const toastrRefCurrent = toastrRef && toastrRef.current ? toastrRef.current : undefined;
@@ -127,6 +131,7 @@ const SignUp = () => {
         <div className="signup-page">
             <div className="signup-container">
                 <Toastr ref={toastrRef} />
+                <AppLoader showLoader={showLoader} />
                 <div className="signup-logo-form">
                     <div className="signup-logo">
                         <img src="/logo/app-logo.png"

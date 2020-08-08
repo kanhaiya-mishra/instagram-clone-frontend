@@ -8,8 +8,10 @@ import DBLayer from '../../dblayer';
 import { Avatar } from '@material-ui/core';
 import CreatePostModal from '../../components/upload-post-component/upload-image-modal';
 import InstPostModal from '../../components/insta-post-modal-container/insta-post-modal';
+import FollowButton from '../../components/follow-button-component/follow-button';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ChatBubbleIcon from '@material-ui/icons/ChatBubble';
+import UserService from '../../services/user-service';
 
 const useStyles = makeStyles((theme) => ({
     button: {
@@ -26,27 +28,37 @@ const useStyles = makeStyles((theme) => ({
 
 const Profile = (props) => {
     const classes = useStyles();
-    const username = props.computedMatch.params.id;
+    const [username, setUsername] = useState(props.computedMatch.params.id);
     const [userDetails, setUserDetails] = useState({});
     const [userPosts, setUserPosts] = useState([]);
     const [showLoader, setShowLoader] = useState(true);
+    const [followerCount, setFollowerCount] = useState(0);
     const createPostRef = React.useRef();
     const instaPostRef = React.useRef();
+
+    if (props.computedMatch.params.id !== username) {
+        setUsername(props.computedMatch.params.id);
+    }
 
     useEffect(() => {
         DBLayer.allUserPosts(username)
             .then(res => {
                 setUserDetails(res.data.userProfile);
+                setFollowerCount(res.data.userProfile.followers);
                 setUserPosts(res.data.instaPosts);
                 setShowLoader(false);
             })
             .catch(err => {
                 setShowLoader(false);
             })
-    }, []);
+    }, [username]);
 
     const updateProfilePic = () => {
 
+    }
+
+    const syncFollowerCount = (fc) => {
+        setFollowerCount(fc);
     }
 
     const openCreatePostDialog = (e) => {
@@ -68,7 +80,7 @@ const Profile = (props) => {
     const updateCommentLikeCount = (data) => {
         const localUserPosts = JSON.parse(JSON.stringify(userPosts));
         localUserPosts.forEach((post, index) => {
-            if(post._id === data.postId) {
+            if (post._id === data.postId) {
                 post.likeCount = data.likeCommentCount.likeCount;
                 post.commentCount = data.likeCommentCount.commentCount;
                 return;
@@ -103,25 +115,34 @@ const Profile = (props) => {
                                     <strong>{userPosts.length}</strong> posts
                                 </span> &nbsp;
                                 <span>
-                                    <strong>{userDetails.followers.length}</strong> followers
+                                    <strong>{followerCount}</strong> followers
                                 </span> &nbsp;
                                 <span>
-                                    <strong>{userDetails.following.length}</strong> following
+                                    <strong>{userDetails.following}</strong> following
                                 </span>
                             </div>
                         </div>
                     </div>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        className={classes.button}
-                        onClick={openCreatePostDialog}
-                        disableElevation>
-                        Create Post
+                    {userDetails.username !== UserService.getUser().username ?
+                        <FollowButton
+                            following={userDetails.isFollowing}
+                            username={userDetails.username}
+                            followerCountChanged={syncFollowerCount}
+                        /> :
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            className={classes.button}
+                            onClick={openCreatePostDialog}
+                            disableElevation>
+                            Create Post
                     </Button>
+                    }
                     <hr className="profile__divider" />
                     <div className="profile__container">
-                        {userPosts.length > 0 ? <PaintUserProfile openInstaPostModal={openInstaPostModal} userPosts={userPosts} /> : <div>Click Create Post to create a new Post!</div>}
+                        {userPosts.length > 0 ? <PaintUserProfile openInstaPostModal={openInstaPostModal} userPosts={userPosts} /> :
+                            userDetails.username !== UserService.getUser().username ? <div>This user has no posts!</div> :
+                                <div>Click Create Post to create a new Post!</div>}
                     </div>
                 </>
             }

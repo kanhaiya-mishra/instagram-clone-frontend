@@ -25,7 +25,7 @@ class DBLayer {
 
     static uploadImage(data) {
         const apiURL = environment.CLOUDINARY_URL;
-        return API.post(apiURL, data);
+        return axios.post(apiURL, data);
     }
 
     static postInstaPost(data) {
@@ -53,9 +53,14 @@ class DBLayer {
         return API.delete(apiURL);
     }
 
-    static updateComment(commentData) {
-        const apiURL = `${environment.API_URL}/comment`;
-        return API.put(apiURL, commentData);
+    static followUser(id) {
+        const apiURL = `${environment.API_URL}/follower/${id}`;
+        return API.put(apiURL);
+    }
+
+    static unfollowUser(id) {
+        const apiURL = `${environment.API_URL}/follower/${id}`;
+        return API.delete(apiURL);
     }
 }
 

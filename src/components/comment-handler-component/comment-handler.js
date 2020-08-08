@@ -138,14 +138,6 @@ const CommentsHandler = (props, ref) => {
             })
     }
 
-    // const updateComment = (comment) => {
-    //     DBLayer.updateComment({ comment })
-    //         .then((res) => {
-    //             const sortedComments = sortComments(res.data);
-    //             setAllComments(sortedComments);
-    //         })
-    // }
-
     const likeComment = (comments) => {
         return comments;
     }
@@ -180,7 +172,9 @@ const CommentPainter = (props) => {
                     <div className={classes.commentText}>
                         <span style={{ fontSize: 16, fontWeight: 600 }}>{'@' + props.comment.commentOwnerIdUsername + ' '}</span>{props.comment.commentText}
                     </div>
-                    <DeleteIcon className={classes.deleteButton} onClick={() => props.onDeleteComment(props.comment._id)} />
+                    {UserService.getUser().username === props.comment.commentOwnerIdUsername &&
+                        <DeleteIcon className={classes.deleteButton} onClick={() => props.onDeleteComment(props.comment._id)} />
+                    }
                 </div>
                 <div className={classes.commentSecondSection}>
                     {moment(props.comment.createdOn).fromNow()} &nbsp;
