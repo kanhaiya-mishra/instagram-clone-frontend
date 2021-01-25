@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import './app-header.css';
-import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
 import UserService from '../../services/user-service';
 import DBLayer from '../../dblayer';
@@ -9,94 +8,83 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import Avatar from '@material-ui/core/Avatar';
 import HomeIcon from '@material-ui/icons/Home';
 
-const useStyles = makeStyles((theme) => ({
-    iconButtons: {
-        cursor: 'pointer',
-    },
-    rightColumn: {
-        display: 'flex'
-    },
-    profileAvatar: {
-        height: "24px",
-        width: "24px",
-        marginRight: "8px",
-        cursor: 'pointer'
-    }
-}));
-
+import AutoComplete from '../autocomplete-component/autocomplete';
 
 function AppHeader() {
-    const history = useHistory();
-    const classes = useStyles();
-    let currentUser = UserService.getUser();
-    if (!currentUser) { currentUser = {}; }
-    const [user, setUser] = useState(currentUser);
+   const history = useHistory();
+   let currentUser = UserService.getUser();
+   if (!currentUser) { currentUser = {}; }
+   const [user, setUser] = useState(currentUser);
 
-    React.useEffect(() => {
-        const checkAndUpdateUser = setInterval(() => {
-            const newUser = UserService.getUser();
-            if (newUser) {
-                if (!_.isEqual(newUser, currentUser)) {
-                    setUser(newUser);
-                }
-                currentUser = newUser;
-            } else {
-                if (Object.keys(currentUser).length !== 0) {
-                    setUser({});
-                }
-                currentUser = {};
+   useEffect(() => {
+      const checkAndUpdateUser = setInterval(() => {
+         const newUser = UserService.getUser();
+         if (newUser) {
+            if (!_.isEqual(newUser, currentUser)) {
+               setUser(newUser);
             }
-        }, 300);
-        return () => {
-            clearInterval(checkAndUpdateUser);
-        };
-    }, []);
+            currentUser = newUser;
+         } else {
+            if (Object.keys(currentUser).length !== 0) {
+               setUser({});
+            }
+            currentUser = {};
+         }
+      }, 300);
+      return () => {
+         clearInterval(checkAndUpdateUser);
+      };
+   }, []);
 
-    const logout = () => {
-        DBLayer.signOut().then(() => {
-            UserService.removeUser();
-            setUser({});
-            history.push('/signin');
-        }).catch(() => {
-            alert("Error in logging you out!. Please try again!");
-        })
-    };
+   const logout = () => {
+      DBLayer.signOut().then(() => {
+         UserService.removeUser();
+         setUser({});
+         history.push('/signin');
+      }).catch(() => {
+         alert("Error in logging you out!. Please try again!");
+      })
+   };
 
-    const redirect = (arg) => {
-        if (arg == 'HOME') {
-            history.push('/')
-        } else if (arg === 'PROFILE') {
-            const username = user.username;
-            history.push(`/profile/${username}`);
-        }
-    }
+   const redirect = (arg) => {
+      if (arg === 'HOME') {
+         history.push('/')
+      } else if (arg === 'PROFILE') {
+         const username = user.username;
+         history.push(`/profile/${username}`);
+      }
+   }
 
-    return (
-        <div className="app__header">
-            <img className="app__headerImg"
-                src="https://www.instagram.com/static/images/branding/logoWhiteoutLockup.png/3a62b1a95da3.png"
-                onClick={() => redirect('HOME')}
-                alt="logo" />
-            {/* <Idhar Search Dalna Hai> */}
+   return (
+      <div className="app__header">
+         <img className="app__headerImg"
+            src="https://www.instagram.com/static/images/branding/logoWhiteoutLockup.png/3a62b1a95da3.png"
+            onClick={() => redirect('HOME')}
+            alt="logo" />
+         {Object.keys(user).length !== 0 &&
             <div>
-                {Object.keys(user).length !== 0 &&
-                    <span className={classes.rightColumn}>
-                        <HomeIcon onClick={() => redirect('HOME')}
-                            style={{ marginRight: "8px" }}
-                            className={classes.iconButtons} />
-                        <Avatar
-                            title="My Profile"
-                            onClick={() => redirect('PROFILE')}
-                            className={classes.profileAvatar}
-                            alt={user.username}
-                            src={user.profileURL}
-                        ></Avatar>
-                        <ExitToAppIcon onClick={logout} className={classes.iconButtons} />
-                    </span>
-                }
+               <AutoComplete />
             </div>
-        </div>
-    )
+         }
+         <div>
+            {Object.keys(user).length !== 0 &&
+               <span className="rightColumn">
+                  <HomeIcon onClick={() => redirect('HOME')}
+                     style={{ marginRight: "8px" }}
+                     className="iconButtons" />
+                  <Avatar
+                     title="My Profile"
+                     onClick={() => redirect('PROFILE')}
+                     className="profileAvatar"
+                     alt={user.username}
+                     src={user.profileURL}
+                  ></Avatar>
+                  <ExitToAppIcon onClick={logout} className="iconButtons" />
+               </span>
+            }
+         </div>
+      </div>
+   )
 }
 
 export default AppHeader;

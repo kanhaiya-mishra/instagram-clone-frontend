@@ -12,3 +12,17 @@
   cursor: pointer;
   object-fit: contain;
 }
+
+.iconButtons {
+   cursor: pointer;
+}
+
+.rightColumn {
+   display: flex;
+}
+.profileAvatar {
+   height: 24px !important;
+   width: 24px !important;
+   margin-right: 8px;
+   cursor: pointer;
+}

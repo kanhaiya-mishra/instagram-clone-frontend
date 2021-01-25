@@ -127,6 +127,7 @@ const SignUp = () => {
                 })
         }
     }
+    
     return (
         <div className="signup-page">
             <div className="signup-container">

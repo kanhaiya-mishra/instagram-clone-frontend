@@ -1,4 +1,4 @@
-import React, { useImperativeHandle, useState, useEffect } from 'react';
+import React, { useImperativeHandle, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -106,7 +106,8 @@ const CreatePostModal = React.forwardRef((props, ref) => {
                         <>
                             <img
                                 src={post.imageURL}
-                                className={classes.preview} />
+                                className={classes.preview}
+                                alt="img" />
                             <div className={classes.instaPostRightPanel}>
                                 <Header close={handleClose} />
                                 <div className={classes.commentSection}>

@@ -1,4 +1,4 @@
-import { ThemeProvider, createMuiTheme, StylesProvider, createGenerateClassName } from '@material-ui/core';
+import { ThemeProvider, createMuiTheme } from '@material-ui/core';
 import React from 'react';
 
 export const OverrideTheme = {
