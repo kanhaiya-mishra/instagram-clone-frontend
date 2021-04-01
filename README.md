@@ -34,7 +34,8 @@ npm run start
 
 This is a simple Frontend app build using Javascript/HTML5/CSS and ReactJS<br />
 The app is not mobile ready.
-The app uses proper REST APIs to communicate with backend.
+Authentication and Authorization in app are done by JWT Tokens.
+The app uses proper REST APIs to communicate with [Backend](https://github.com/kanhaiya-mishra/instagram-clone-backend).
 
 Currently the app supports:
 Signing up as a user, logging in as a user.<br />
@@ -43,5 +44,3 @@ Navigating to my profile page.<br />
 Searching user by username.<br />
 Adding and removing photos.<br />
 Adding and removing comments.
-
-
